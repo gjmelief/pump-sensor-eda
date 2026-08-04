@@ -32,8 +32,8 @@ This project asks the same questions a maintenance engineer would ask — but an
 
 | # | Notebook | Focus | Status |
 |---|----------|-------|--------|
-| 1 | `01_initial_exploration.ipynb` | Data loading, shape, dtypes, missing values, duplicates | 🔄 In progress |
-| 2 | `02_data_cleaning.ipynb` | Missing data handling, outlier detection, transformations | ⏳ Planned |
+| 1 | `01_initial_exploration.ipynb` | Data loading, shape, dtypes, missing values, duplicates, z-score outlier scan | ✅ Complete |
+| 2 | `02_data_cleaning.ipynb` | Duplicate removal, dtype conversion, outlier/missing analysis by machine status | ✅ Complete |
 | 3 | `03_analysis.ipynb` | Descriptive stats, correlations, trend analysis | ⏳ Planned |
 
 ---
@@ -60,6 +60,15 @@ pump-sensor-eda/
 - **Pandas** — data loading, cleaning, manipulation
 - **NumPy** — array operations, statistical functions
 - **Matplotlib** — visualization *(Phase 3)*
+
+---
+
+## 📈 Key Findings
+
+- Identified 5,745 duplicate rows via timestamp pattern analysis (1-minute/59-minute recurring logging artifact) and removed them as noise, not signal.
+- `sensor_15` is 100% missing and `sensor_50`/`sensor_51` are partially missing (35% and 7% overall) — dropped or flagged depending on downstream use.
+- Z-score analysis flagged 28 sensors exceeding 3σ; cross-referencing with the `machine_status` column (NORMAL / BROKEN / RECOVERING) showed all outliers occur during NORMAL operation, and missingness in `sensor_50`/`sensor_51` persists even in NORMAL status (37% and 6% respectively) — ruling out simple "missing because broken" explanations.
+- Interpolation strategy for remaining missing values deferred to the analysis phase, once the correlation structure between sensors is better understood.
 
 ---
 
